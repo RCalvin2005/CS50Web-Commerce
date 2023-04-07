@@ -1,14 +1,39 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User
+from .models import User, Listing, Bid, Comment
+from .forms import ListingForm
 
 
 def index(request):
     return render(request, "auctions/index.html")
+
+
+@login_required
+def add_listing(request):
+    """ Allows a user to create a listing """
+
+    if request.method == "POST":
+        form = ListingForm(request.POST)
+        if form.is_valid():
+            # https://docs.djangoproject.com/en/4.2/topics/forms/modelforms/#the-save-method
+            listing = form.save(commit=False)
+            listing.seller = request.user
+            listing.save()
+            return HttpResponseRedirect(reverse("index"))
+        else:
+            return render(request, "auctions/add_listing.html", {
+                "form": form,
+                "message": "Failed to add listing",
+            })
+    else:
+        return render(request, "auctions/add_listing.html", {
+            "form": ListingForm()
+        })
 
 
 def login_view(request):

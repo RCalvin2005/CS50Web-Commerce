@@ -14,14 +14,23 @@ class Listing(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listings")
 
+    def __str__(self):
+        return f"{self.seller} is selling {self.title} for a base price of ${self.starting_price}"
+    
 
 class Bid(models.Model):
     price = models.DecimalField(max_digits=8, decimal_places=2)
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="bids")
     bidder = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bids")
 
+    def __str__(self):
+        return f"{self.bidder} has placed a bid of {self.price} for {self.listing}"
+
 
 class Comment(models.Model):
     message = models.TextField()
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="comments")
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comments")
+
+    def __str__(self):
+        return f"{self.author} commented \"{self.message}\" at {self.listing}"
