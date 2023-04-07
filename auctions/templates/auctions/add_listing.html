@@ -1,5 +1,7 @@
 {% extends "auctions/layout.html" %}
 
+{% load crispy_forms_tags %}
+
 {% block body %}
 
     <h2>Create New Listing</h2>
@@ -9,8 +11,9 @@
     {% endif %}
 
     <form action="{% url 'add_listing' %}" method="post">
+        <!-- https://ordinarycoders.com/blog/article/render-a-django-form-with-bootstrap -->
         {% csrf_token %}
-        {{ form }}
+        {{ form | crispy }}
         <input class="btn btn-primary" type="submit" value="Save">
     </form>
 
