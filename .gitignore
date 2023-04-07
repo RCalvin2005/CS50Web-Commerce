@@ -1,0 +1,8 @@
+# Source: https://djangowaves.com/tips-tricks/gitignore-for-a-django-project/
+# Django
+*.log
+*.pot
+*.pyc
+__pycache__
+db.sqlite3
+media
