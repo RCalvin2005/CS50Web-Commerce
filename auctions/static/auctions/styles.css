@@ -1,3 +1,15 @@
 body {
     padding: 10px;
 }
+
+.listing-group {
+    height: 200px;
+}
+
+.listing-image {
+    height: 100%;
+    max-width: 100%;
+    width: auto;
+    object-fit: contain;
+    margin: auto;
+}

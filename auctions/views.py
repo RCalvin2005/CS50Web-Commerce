@@ -10,7 +10,9 @@ from .forms import ListingForm
 
 
 def index(request):
-    return render(request, "auctions/index.html")
+    return render(request, "auctions/index.html", {
+        "listings": Listing.objects.filter(active=True),
+    })
 
 
 @login_required
