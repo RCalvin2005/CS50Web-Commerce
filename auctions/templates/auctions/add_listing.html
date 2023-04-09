@@ -4,17 +4,21 @@
 
 {% block body %}
 
-    <h2>Create New Listing</h2>
+    <div class="container">
+        <h2>Create New Listing</h2>
 
-    {% if message %}
-        <div>{{ message }}</div>
-    {% endif %}
+        {% if message %}
+            <div>{{ message }}</div>
+        {% endif %}
 
-    <form action="{% url 'add_listing' %}" method="post">
-        <!-- https://ordinarycoders.com/blog/article/render-a-django-form-with-bootstrap -->
-        {% csrf_token %}
-        {{ form | crispy }}
-        <input class="btn btn-primary" type="submit" value="Save">
-    </form>
-
+        <div class="my-4">
+            <form action="{% url 'add_listing' %}" method="post">
+                <!-- https://ordinarycoders.com/blog/article/render-a-django-form-with-bootstrap -->
+                {% csrf_token %}
+                {{ form | crispy }}
+                <input class="btn btn-primary" type="submit" value="Save">
+            </form>
+        </div>
+    </div>
+    
 {% endblock %}
