@@ -10,6 +10,8 @@ from .forms import ListingForm
 
 
 def index(request):
+    """ Shows currently active listings """
+
     return render(request, "auctions/index.html", {
         "listings": Listing.objects.filter(active=True),
     })
@@ -37,6 +39,15 @@ def add_listing(request):
         return render(request, "auctions/add_listing.html", {
             "form": ListingForm()
         })
+
+
+def listing_page(request, listing_id):
+    """ Shows information for given listing """
+
+    return render(request, "auctions/listing_page.html", {
+        "listing": Listing.objects.get(pk=listing_id),
+    })
+
 
 
 def login_view(request):

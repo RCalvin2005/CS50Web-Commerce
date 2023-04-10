@@ -6,6 +6,10 @@ body {
     height: 200px;
 }
 
+.listing-image-container {
+    height: 250px;
+}
+
 .listing-image {
     height: 100%;
     max-width: 100%;
