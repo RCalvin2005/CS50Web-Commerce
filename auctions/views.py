@@ -25,6 +25,7 @@ def add_listing(request):
             # https://docs.djangoproject.com/en/4.2/topics/forms/modelforms/#the-save-method
             listing = form.save(commit=False)
             listing.seller = request.user
+            listing.current_price = listing.starting_price
             listing.save()
             return HttpResponseRedirect(reverse("index"))
         else:
