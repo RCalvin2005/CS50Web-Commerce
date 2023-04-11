@@ -16,16 +16,16 @@ class Listing(models.Model):
     active = models.BooleanField(default=True)
 
     def __str__(self):
-        return f"{self.seller} is selling {self.title} for a base price of ${self.starting_price}"
+        return f"{self.title}"
     
 
 class Bid(models.Model):
-    price = models.DecimalField(max_digits=8, decimal_places=2)
+    value = models.DecimalField(max_digits=8, decimal_places=2)
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="bids")
     bidder = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bids")
 
     def __str__(self):
-        return f"{self.bidder} has placed a bid of {self.price} for {self.listing}"
+        return f"{self.bidder} has placed a bid of ${self.value} for {self.listing}"
 
 
 class Comment(models.Model):
