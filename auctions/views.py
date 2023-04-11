@@ -33,7 +33,7 @@ def add_listing(request):
         else:
             return render(request, "auctions/add_listing.html", {
                 "form": form,
-                "message": "Failed to add listing",
+                "message": "Failed to add listing.",
             })
     else:
         return render(request, "auctions/add_listing.html", {
