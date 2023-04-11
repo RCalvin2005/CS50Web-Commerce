@@ -21,3 +21,31 @@ class BidForm(forms.ModelForm):
         labels = {
             "value": "",
         }
+
+    # https://stackoverflow.com/questions/17830470/get-request-in-form-field-validation
+    def __init__(self, *args, **kwargs):
+        self.listing_id = kwargs.pop('listing_id', None)
+        super(BidForm, self).__init__(*args, **kwargs)
+
+    def clean(self):
+
+        # https://www.geeksforgeeks.org/python-form-validation-using-django/
+        super(BidForm, self).clean()
+
+        value = self.cleaned_data.get("value")
+
+        listing = Listing.objects.get(pk=self.listing_id)
+
+        try:
+            # Ensure bid placed is higher than highest bid
+            highest_bid = listing.bids.order_by('-value')[0].value
+            if not value > highest_bid:
+                self._errors['value'] = self.error_class([
+                f'Bid should be more than ${highest_bid}']) 
+        except IndexError:
+            # Ensure bid placed at least equal to starting price
+            if not value >= listing.starting_price:
+                self._errors['value'] = self.error_class([
+                f'Bid should be at least ${listing.starting_price}'])             
+
+        return self.cleaned_data

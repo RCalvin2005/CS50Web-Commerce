@@ -4,6 +4,13 @@
 
 {% block body %}
     <div class="container">
+        {% if msg %}
+            <div class="alert {{ msg.class }} alert-dismissible" role="alert">
+                {{ msg.msg }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endif %}
+
         <h2 class="fw-bold">Listing: {{ listing.title }}</h2>
 
         {% if listing.image_url %}
@@ -17,7 +24,7 @@
         <p class="my-1">{{ listing.description }}</p>
 
         <h3 class="mt-3 fw-bold">${{ listing.current_price }}</h3>
-        
+
         <form action="{% url 'place_bid' listing.id %}" method="post">
             {% csrf_token %}
             <p class="small mb-1">{{ bid_status }}</p>

@@ -7,6 +7,7 @@ from django.urls import reverse
 
 from .models import User, Listing, Bid, Comment
 from .forms import ListingForm, BidForm
+from .util import get_bid_status
 
 
 def index(request):
@@ -47,39 +48,44 @@ def listing_page(request, listing_id):
     # Get listing info
     listing = Listing.objects.get(pk=listing_id)
 
-    # Get total number of bids
-    bid_count = listing.bids.count()
-
-    if bid_count:
-        # https://stackoverflow.com/questions/844591/how-to-do-select-max-in-django
-        highest_bid = listing.bids.order_by('-value')[0].value
-
-        # Check if user has placed a bid
-        user_bid = listing.bids.filter(bidder=request.user)
-        if user_bid:
-            if user_bid[0].value == highest_bid:
-                message = "Your bid is the current bid."
-            else:
-                message = "Your bid is not the current bid. Place a new bid to buy the listing."
-        else:
-            message = "You have not placed a bid."
-    else:
-        message = "Be the first to place a bid."
+    msg = request.session.get("msg")
+    request.session["msg"] = None
 
     return render(request, "auctions/listing_page.html", {
         "listing": listing,
-        "bid_status": f"{bid_count} bid(s) so far. {message}",
+        "bid_status": get_bid_status(request, listing),
         "form": BidForm(),
+        "msg": msg
     })
 
 
 def place_bid(request, listing_id):
     """ Allows user to place bid on listing """
-    
     if request.method == "POST":
-        form = BidForm(request.POST)
+        listing = Listing.objects.get(pk=listing_id)
+        form = BidForm(request.POST, listing_id=listing_id)
+
         if form.is_valid():
-            pass
+            # Save bid data
+            bid = form.save(commit=False)
+            bid.listing = listing
+            bid.bidder = request.user
+            bid.save()
+
+            # Update current price
+            listing.current_price = bid.value
+            listing.save()
+            
+            request.session["msg"] = {"msg": "Bid placed successfully.", "class": "alert-success"}
+
+            return HttpResponseRedirect(reverse("listing_page", args=[listing_id]))
+        else:
+            return render(request, "auctions/listing_page.html", {
+                "listing": listing,
+                "bid_status": get_bid_status(request, listing),
+                "form": form,
+                "msg": {"msg": "Failed to place bid.", "class": "alert-danger"}
+            })
     else:
         return HttpResponseRedirect(reverse("listing_page", args=[listing_id]))
 
