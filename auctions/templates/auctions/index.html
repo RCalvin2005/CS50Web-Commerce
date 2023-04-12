@@ -1,5 +1,7 @@
 {% extends "auctions/layout.html" %}
 
+{% load custom_filters %}
+
 {% block body %}
     <h2>Active Listings</h2>
 
@@ -17,7 +19,7 @@
                     <h4 class="mt-3 fw-bold">{{ listing.title }}</h4>
                     <p class="fw-bold my-1">Price: ${{ listing.current_price }}</p>
                     <p class="my-1">{{ listing.description }}</p>
-                    <p class="text-muted small my-1">Created {{ listing.date }}</p>
+                    <p class="text-muted small my-1">Created {{ listing.date | time_ago }}</p>
                 </div>
             </div>
         </a>

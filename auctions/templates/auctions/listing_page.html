@@ -1,6 +1,7 @@
 {% extends "auctions/layout.html" %}
 
 {% load crispy_forms_tags %}
+{% load custom_filters %}
 
 {% block body %}
     <div class="container">
@@ -28,7 +29,7 @@
         {% if user.is_authenticated %}
             <form action="{% url 'place_bid' listing.id %}" method="post">
                 {% csrf_token %}
-                <p class="small mb-1">{{ bid_status | safe}}</p>
+                <p class="small mb-1">{{ bid_status | safe }}</p>
                 {{ bid_form | crispy }}
                 <input class="btn btn-primary" type="submit" value="Place Bid">
             </form>
@@ -54,7 +55,7 @@
         {% endif %}
 
         {% for comment in comments %}
-            <p class="mb-1"><b>@{{ comment.author }}</b>   <span class="small text-muted">{{ comment.date }}</span></p>
+            <p class="mb-1"><b>@{{ comment.author }}</b>   <span class="small text-muted">{{ comment.date | time_ago }}</span></p>
             <p>{{ comment.message }}</p>
         {% endfor %}
     </div>
