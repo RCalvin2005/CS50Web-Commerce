@@ -59,6 +59,7 @@ def listing_page(request, listing_id):
     })
 
 
+@login_required
 def place_bid(request, listing_id):
     """ Allows user to place bid on listing """
     if request.method == "POST":

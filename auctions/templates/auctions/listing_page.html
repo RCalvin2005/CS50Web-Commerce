@@ -25,12 +25,16 @@
 
         <h3 class="mt-3 fw-bold">${{ listing.current_price }}</h3>
 
-        <form action="{% url 'place_bid' listing.id %}" method="post">
-            {% csrf_token %}
-            <p class="small mb-1">{{ bid_status }}</p>
-            {{ form | crispy }}
-            <input class="btn btn-primary" type="submit" value="Place Bid">
-        </form>
+        {% if user.is_authenticated %}
+            <form action="{% url 'place_bid' listing.id %}" method="post">
+                {% csrf_token %}
+                <p class="small mb-1">{{ bid_status | safe}}</p>
+                {{ form | crispy }}
+                <input class="btn btn-primary" type="submit" value="Place Bid">
+            </form>
+        {% else %}
+            <p class="small">{{ bid_status | safe }}</p>
+        {% endif %}
 
         <h4 class="mt-3">Details</h4>
         <ul>
