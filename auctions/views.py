@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.urls import reverse
 
 from .models import User, Listing, Bid, Comment
-from .forms import ListingForm, BidForm
+from .forms import ListingForm, BidForm, CommentForm
 from .util import get_bid_status
 
 
@@ -53,9 +53,12 @@ def listing_page(request, listing_id):
 
     return render(request, "auctions/listing_page.html", {
         "listing": listing,
+        "comments": listing.comments.all().order_by("-date"),
+        "comment_count": listing.comments.count(),
         "bid_status": get_bid_status(request, listing),
-        "form": BidForm(),
-        "msg": msg
+        "bid_form": BidForm(),
+        "comment_form": CommentForm(),
+        "msg": msg,
     })
 
 
@@ -83,9 +86,43 @@ def place_bid(request, listing_id):
         else:
             return render(request, "auctions/listing_page.html", {
                 "listing": listing,
+                "comments": listing.comments.all().order_by("-date"),
+                "comment_count": listing.comments.count(),
                 "bid_status": get_bid_status(request, listing),
-                "form": form,
+                "bid_form": form,
+                "comment_form": CommentForm(),
                 "msg": {"msg": "Failed to place bid.", "class": "alert-danger"}
+            })
+    else:
+        return HttpResponseRedirect(reverse("listing_page", args=[listing_id]))
+
+
+@login_required
+def post_comment(request, listing_id):
+    """ Allows user to post comment on listing """
+    if request.method == "POST":
+        listing = Listing.objects.get(pk=listing_id)
+        form = CommentForm(request.POST)
+
+        if form.is_valid():
+            # Save comment data
+            comment = form.save(commit=False)
+            comment.listing = listing
+            comment.author = request.user
+            comment.save()
+            
+            request.session["msg"] = {"msg": "Comment posted!", "class": "alert-success"}
+
+            return HttpResponseRedirect(reverse("listing_page", args=[listing_id]))
+        else:
+            return render(request, "auctions/listing_page.html", {
+                "listing": listing,
+                "comments": listing.comments.all().order_by("-date"),
+                "comment_count": listing.comments.count(),
+                "bid_status": get_bid_status(request, listing),
+                "bid_form": BidForm(),
+                "comment_form": form,
+                "msg": {"msg": "Failed to post comment.", "class": "alert-danger"}
             })
     else:
         return HttpResponseRedirect(reverse("listing_page", args=[listing_id]))

@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Listing, Bid
+from .models import Listing, Bid, Comment
 
 # Source: https://ordinarycoders.com/blog/article/django-modelforms
 
@@ -49,3 +49,18 @@ class BidForm(forms.ModelForm):
                 f'Bid should be at least ${listing.starting_price}'])             
 
         return self.cleaned_data
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ("message",)
+        widgets = {
+            "message": forms.Textarea(attrs={
+                "placeholder": "Add a comment...",
+                "rows": "2",
+            }),
+        }
+        labels = {
+            "message": "",
+        }
