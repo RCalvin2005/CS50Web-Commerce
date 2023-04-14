@@ -128,6 +128,18 @@ def post_comment(request, listing_id):
         return HttpResponseRedirect(reverse("listing_page", args=[listing_id]))
 
 
+@login_required
+def close_listing(request, listing_id):
+    if request.method == "POST":
+        listing = Listing.objects.get(pk=listing_id)
+        if request.user == listing.seller:
+            listing.active = False
+            listing.save()
+            request.session["msg"] = {"msg": "Listing has been closed!", "class": "alert-success"}
+
+    return HttpResponseRedirect(reverse("listing_page", args=[listing_id]))
+
+
 def login_view(request):
     if request.method == "POST":
 
