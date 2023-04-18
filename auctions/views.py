@@ -81,7 +81,12 @@ def place_bid(request, listing_id):
             listing.current_price = bid.value
             listing.save()
             
-            request.session["msg"] = {"msg": "Bid placed successfully.", "class": "alert-success"}
+            # Add listing to watchlist
+            if listing not in request.user.watchlist.all():
+                listing.watchers.add(request.user) 
+                request.session["msg"] = {"msg": "Bid placed successfully. Listing added to watchlist.", "class": "alert-success"}
+            else:
+                request.session["msg"] = {"msg": "Bid placed successfully.", "class": "alert-success"}
 
             return HttpResponseRedirect(reverse("listing_page", args=[listing_id]))
         else:
