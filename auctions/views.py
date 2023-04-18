@@ -100,6 +100,7 @@ def place_bid(request, listing_id):
 @login_required
 def post_comment(request, listing_id):
     """ Allows user to post comment on listing """
+
     if request.method == "POST":
         listing = Listing.objects.get(pk=listing_id)
         form = CommentForm(request.POST)
@@ -130,6 +131,8 @@ def post_comment(request, listing_id):
 
 @login_required
 def close_listing(request, listing_id):
+    """ Allows seller to close their listing """
+
     if request.method == "POST":
         listing = Listing.objects.get(pk=listing_id)
         if request.user == listing.seller:
@@ -138,6 +141,17 @@ def close_listing(request, listing_id):
             request.session["msg"] = {"msg": "Listing has been closed!", "class": "alert-success"}
 
     return HttpResponseRedirect(reverse("listing_page", args=[listing_id]))
+
+
+def user_listings(request, username):
+    """ Displays all listings created by a specified user """
+
+    seller = User.objects.get(username=username)
+
+    return render(request, "auctions/user_listings.html", {
+        "seller": seller,
+        "listings": seller.listings.all(),
+    })
 
 
 def login_view(request):
