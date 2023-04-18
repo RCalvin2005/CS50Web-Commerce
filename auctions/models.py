@@ -18,7 +18,8 @@ class Listing(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listings")
     active = models.BooleanField(default=True)
-
+    watchers = models.ManyToManyField(User, blank=True, related_name="watchlist")
+    
     def __str__(self):
         return f"{self.title}"
     

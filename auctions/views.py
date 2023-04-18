@@ -53,6 +53,7 @@ def listing_page(request, listing_id):
 
     return render(request, "auctions/listing_page.html", {
         "listing": listing,
+        "watchers": listing.watchers.all(),
         "comments": listing.comments.all().order_by("-date"),
         "comment_count": listing.comments.count(),
         "bid_status": get_bid_status(request, listing),
@@ -86,6 +87,7 @@ def place_bid(request, listing_id):
         else:
             return render(request, "auctions/listing_page.html", {
                 "listing": listing,
+                "watchers": listing.watchers.all(),
                 "comments": listing.comments.all().order_by("-date"),
                 "comment_count": listing.comments.count(),
                 "bid_status": get_bid_status(request, listing),
@@ -152,6 +154,45 @@ def user_listings(request, username):
         "seller": seller,
         "listings": seller.listings.all(),
     })
+
+
+@login_required
+def watchlist(request, username):
+    """ Displays all listings in user's own watchlist """
+
+    # Redirect to own watchlist if trying to view someone else's
+    if request.user.username != username:
+        return HttpResponseRedirect(reverse("watchlist", args=[request.user.username]))
+
+    return render(request, "auctions/watchlist.html", {
+        "watchlist": request.user.watchlist.all(),
+    })
+
+
+@login_required
+def watchlist_add(request, listing_id):
+    """ Allows a user to add a listing to their watchlist """
+
+    if request.method == "POST":
+        listing = Listing.objects.get(pk=listing_id)
+        listing.watchers.add(request.user)
+        listing.save()
+        request.session["msg"] = {"msg": "Listing has been added to watchlist!", "class": "alert-success"}
+
+    return HttpResponseRedirect(reverse("listing_page", args=[listing_id]))
+
+
+@login_required
+def watchlist_remove(request, listing_id):
+    """ Allows a user to remove a listing from their watchlist """
+
+    if request.method == "POST":
+        listing = Listing.objects.get(pk=listing_id)
+        listing.watchers.remove(request.user)
+        listing.save()
+        request.session["msg"] = {"msg": "Listing has been removed from watchlist!", "class": "alert-success"}
+
+    return HttpResponseRedirect(reverse("listing_page", args=[listing_id]))
 
 
 def login_view(request):

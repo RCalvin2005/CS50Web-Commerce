@@ -1,0 +1,38 @@
+{% extends "auctions/layout.html" %}
+
+{% load custom_filters %}
+
+{% block body %}
+    <h2>{{ user.username }}'s Watchlist</h2>
+
+    {% for listing in watchlist %}
+        <a href="{% url 'listing_page' listing.id %}" class="text-reset text-decoration-none">
+        {% if listing.active %}
+            <div class="row listing-group mx-5 my-3 border border-success border-opacity-25 rounded">
+        {% else %}
+            <div class="row listing-group mx-5 my-3 border border-danger border-opacity-25 rounded">
+        {% endif %}
+                <div class="col-3 text-center h-100 flex-centered">
+                    {% if listing.image_url %}
+                        <img class="listing-image" src="{{ listing.image_url }}" alt="{{ listing.title }}">
+                    {% else %}
+                        <p>No Image Available</p>
+                    {% endif %}
+                </div>
+                <div class="col-9">
+                    <h4 class="mt-3 fw-bold">{{ listing.title }}</h4>
+                    {% if listing.active %}
+                        <p class="mb-0"><span class="badge text-bg-success">Active</span></p>
+                    {% else %}
+                        <p class="mb-0"><span class="badge text-bg-danger">Closed</span></p>
+                    {% endif %}
+                    <p class="fw-bold my-1">Price: ${{ listing.current_price }}</p>
+                    <p class="my-1">{{ listing.description }}</p>
+                    <p class="text-muted small my-1">Created {{ listing.date | time_ago }}</p>
+                </div>
+            </div>
+        </a>
+    {% empty %}
+        <p>You have not added any listings to your watchlist.</p>
+    {% endfor %}
+{% endblock %}

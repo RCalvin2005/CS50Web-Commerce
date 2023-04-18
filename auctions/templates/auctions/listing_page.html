@@ -14,7 +14,28 @@
 
         <h2 class="fw-bold">Listing: {{ listing.title }}</h2>
 
-        {% if request.user == listing.seller and listing.active %}
+        {% if user.is_authenticated and user != listing.seller %}
+            {% if user in watchers %}
+                <form action="{% url 'watchlist_remove' listing.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-danger">
+                        <i class="fa-solid fa-eye-slash small"></i>
+                        Remove from Watchlist
+                    </button>
+                </form>
+            {% else %}
+                <form action="{% url 'watchlist_add' listing.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-primary">
+                        <i class="fa-solid fa-eye small"></i>
+                        Add to Watchlist
+                    </button>
+                </form>
+            {% endif %}
+        {% endif %}
+        
+
+        {% if user == listing.seller and listing.active %}
             <form action="{% url 'close_listing' listing.id %}" method="post">
                 {% csrf_token %}
                 <input class="btn btn-sm btn-danger" type="submit" value="Close Auction">
