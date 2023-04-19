@@ -12,7 +12,16 @@
             </div>
         {% endif %}
 
+        {% if not listing.active %}
+            {% bid_result user listing as bid_result %}
+            {{ bid_result | safe }}
+        {% endif %}
+
         <h2 class="fw-bold">Listing: {{ listing.title }}</h2>
+
+        {% if not listing.active %}
+            <span class="badge text-bg-danger mb-2">Closed</span>
+        {% endif %}
 
         {% if user.is_authenticated and user != listing.seller %}
             {% is_watching user listing as is_watching %}

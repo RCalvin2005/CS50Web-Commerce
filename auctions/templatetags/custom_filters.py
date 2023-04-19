@@ -1,6 +1,8 @@
 from django import template
 from django.utils import timezone
 
+from auctions.models import Bid
+
 import re
 
 # https://www.geeksforgeeks.org/custom-template-filters-in-django/
@@ -102,6 +104,30 @@ def bid_status_message(user, listing):
     else:
         return f"<p class='small mb-1'>{bid_count} bids so far. {bid_msg}</p>"
 
+
+@register.simple_tag
+def bid_result(user, listing):
+    """ Returns the bid result for a closed listing """
+
+    if user != listing.seller:
+        user_bid = listing.bids.filter(bidder=user)
+
+        if user_bid:
+            if user_bid.order_by('-value')[0].value == listing.bids.order_by('-value')[0].value:
+                return f"<div class='alert alert-success' role='alert'>Congrats! You won the bid! Contact <strong>@{listing.seller}</strong> for your item.</div>"
+            else:
+                return "<div class='alert alert-danger' role='alert'>You lost the bid. Better luck next time!</div>"
+        else:
+            return "<div class='alert alert-warning' role='alert'>You did not placed a bid.</div>"
+    
+    else:
+        try:
+            winner = Bid.objects.filter(listing=listing).order_by('-value')[0].bidder
+        except:
+            return f"<div class='alert alert-danger' role='alert'>No one had placed a bid on your listing.</div>"
+
+        return f"<div class='alert alert-primary' role='alert'><strong>@{winner}</strong> has won your listing. The price has increased by <strong>${ listing.current_price - listing.starting_price }</strong> compared to your starting price.</div>"
+            
 
 @register.simple_tag
 def is_watching(user, listing):
