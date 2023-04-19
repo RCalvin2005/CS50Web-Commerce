@@ -15,7 +15,8 @@
         <h2 class="fw-bold">Listing: {{ listing.title }}</h2>
 
         {% if user.is_authenticated and user != listing.seller %}
-            {% if user in watchers %}
+            {% is_watching user listing as is_watching %}
+            {% if is_watching %}
                 <form action="{% url 'watchlist_remove' listing.id %}" method="post">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-sm btn-danger">
@@ -72,7 +73,8 @@
             <li>Created {{ listing.date }}</li>
         </ul>
 
-        <h4 class="mt-4">{{ comment_count }} Comment(s)</h4>
+        {% comment_count listing as comment_count %}
+        {{ comment_count | safe }}
         {% if user.is_authenticated %}
             <form action="{% url 'post_comment' listing.id %}" method="post">
                 {% csrf_token %}
@@ -83,6 +85,7 @@
             </form>
         {% endif %}
 
+        {% get_comments listing as comments %}
         {% for comment in comments %}
             <p class="mb-1"><b>@{{ comment.author }}</b>   <span class="small text-muted">{{ comment.date | time_ago }}</span></p>
             <p>{{ comment.message }}</p>

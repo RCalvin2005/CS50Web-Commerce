@@ -52,9 +52,6 @@ def listing_page(request, listing_id):
 
     return render(request, "auctions/listing_page.html", {
         "listing": listing,
-        "watchers": listing.watchers.all(),
-        "comments": listing.comments.all().order_by("-date"),
-        "comment_count": listing.comments.count(),
         "bid_form": BidForm(),
         "comment_form": CommentForm(),
         "msg": msg,
@@ -90,9 +87,6 @@ def place_bid(request, listing_id):
         else:
             return render(request, "auctions/listing_page.html", {
                 "listing": listing,
-                "watchers": listing.watchers.all(),
-                "comments": listing.comments.all().order_by("-date"),
-                "comment_count": listing.comments.count(),
                 "bid_form": form,
                 "comment_form": CommentForm(),
                 "msg": {"msg": "Failed to place bid.", "class": "alert-danger"}
@@ -122,8 +116,6 @@ def post_comment(request, listing_id):
         else:
             return render(request, "auctions/listing_page.html", {
                 "listing": listing,
-                "comments": listing.comments.all().order_by("-date"),
-                "comment_count": listing.comments.count(),
                 "bid_form": BidForm(),
                 "comment_form": form,
                 "msg": {"msg": "Failed to post comment.", "class": "alert-danger"}

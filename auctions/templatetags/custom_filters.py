@@ -84,7 +84,7 @@ def bid_status_message(user, listing):
                         else:
                             bid_msg = "<strong class='text-danger'>Your bid is not the current bid. Place a new bid to buy the listing.</strong>"
                     else:
-                        bid_msg = "You have not placed a bid."
+                        bid_msg = "<strong>You have not placed a bid.</strong>"
                 else:
                     bid_msg = "<strong class='text-success'>Be the first to place a bid.</strong>"
             else:
@@ -97,4 +97,31 @@ def bid_status_message(user, listing):
     else:
         bid_msg = "<strong class='text-danger'>The listing has been closed.</strong>"
 
-    return f"<p class='small mb-1'>{bid_count} bid(s) so far. {bid_msg}</p>"
+    if bid_count == 1:
+        return f"<p class='small mb-1'>{bid_count} bid so far. {bid_msg}</p>"
+    else:
+        return f"<p class='small mb-1'>{bid_count} bids so far. {bid_msg}</p>"
+
+
+@register.simple_tag
+def is_watching(user, listing):
+    """ Returns True/False if user is watching a listing """
+    return user in listing.watchers.all()
+
+
+@register.simple_tag
+def get_comments(listing):
+    """ Returns a list of comments for given listing """
+    return listing.comments.all().order_by("-date")
+
+
+@register.simple_tag
+def comment_count(listing):
+    """ Returns the number of comments """
+
+    count = listing.comments.count()
+
+    if count == 1:
+        return f"<h4 class='mt-4'>{count} Comment</h4>"
+    else:
+        return f"<h4 class='mt-4'>{count} Comments</h4>"
