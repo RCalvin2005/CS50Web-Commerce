@@ -7,7 +7,6 @@ from django.urls import reverse
 
 from .models import User, Listing, Bid, Comment
 from .forms import ListingForm, BidForm, CommentForm
-from .util import get_bid_status
 
 
 def index(request):
@@ -56,7 +55,6 @@ def listing_page(request, listing_id):
         "watchers": listing.watchers.all(),
         "comments": listing.comments.all().order_by("-date"),
         "comment_count": listing.comments.count(),
-        "bid_status": get_bid_status(request, listing),
         "bid_form": BidForm(),
         "comment_form": CommentForm(),
         "msg": msg,
@@ -95,7 +93,6 @@ def place_bid(request, listing_id):
                 "watchers": listing.watchers.all(),
                 "comments": listing.comments.all().order_by("-date"),
                 "comment_count": listing.comments.count(),
-                "bid_status": get_bid_status(request, listing),
                 "bid_form": form,
                 "comment_form": CommentForm(),
                 "msg": {"msg": "Failed to place bid.", "class": "alert-danger"}
@@ -127,7 +124,6 @@ def post_comment(request, listing_id):
                 "listing": listing,
                 "comments": listing.comments.all().order_by("-date"),
                 "comment_count": listing.comments.count(),
-                "bid_status": get_bid_status(request, listing),
                 "bid_form": BidForm(),
                 "comment_form": form,
                 "msg": {"msg": "Failed to post comment.", "class": "alert-danger"}

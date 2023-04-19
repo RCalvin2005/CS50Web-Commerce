@@ -60,3 +60,41 @@ def bid_status_badge(user, listing):
                 return "<span class='badge text-bg-danger'>You lost</span>"
         else:
             return "<span class='badge text-bg-secondary'>You did not placed a bid</span>"
+
+
+@register.simple_tag
+def bid_status_message(user, listing):
+    """ Returns a message indicating the total bid count and user's bid status """
+
+    # Get total number of bids
+    bid_count = listing.bids.count()
+
+    if listing.active:
+        if user.is_authenticated:
+            if user != listing.seller:
+                if bid_count:
+                    # https://stackoverflow.com/questions/844591/how-to-do-select-max-in-django
+                    highest_bid = listing.bids.order_by('-value')[0].value
+
+                    # Check if user has placed a bid
+                    user_bid = listing.bids.filter(bidder=user)
+                    if user_bid:
+                        if user_bid.order_by('-value')[0].value == highest_bid:
+                            bid_msg = "<strong class='text-success'>Your bid is the current bid.</strong>"
+                        else:
+                            bid_msg = "<strong class='text-danger'>Your bid is not the current bid. Place a new bid to buy the listing.</strong>"
+                    else:
+                        bid_msg = "You have not placed a bid."
+                else:
+                    bid_msg = "<strong class='text-success'>Be the first to place a bid.</strong>"
+            else:
+                if bid_count:
+                    bid_msg = f"<strong class='text-success'>The price has increased by ${ listing.current_price - listing.starting_price } compared to your starting price.</strong>"
+                else:
+                    bid_msg = f"<strong class='text-danger'>Keep waiting for potential buyers.</strong>"
+        else:
+            bid_msg = "<strong class='text-danger'>Login in to place a bid.</strong>"
+    else:
+        bid_msg = "<strong class='text-danger'>The listing has been closed.</strong>"
+
+    return f"<p class='small mb-1'>{bid_count} bid(s) so far. {bid_msg}</p>"
