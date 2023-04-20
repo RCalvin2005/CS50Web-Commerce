@@ -20,7 +20,7 @@ class Listing(models.Model):
     TYPE_CHOICES = [
         ("LUX", "Luxury"),
         ("LTS", "Latest Model"),
-        ("STD", "Standard Model"),
+        ("OLD", "Older Model"),
         ("LEG", "Legacy"),
     ]
     CONDITION_CHOICES = [

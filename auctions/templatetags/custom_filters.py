@@ -151,3 +151,32 @@ def comment_count(listing):
         return f"<h4 class='mt-4'>{count} Comment</h4>"
     else:
         return f"<h4 class='mt-4'>{count} Comments</h4>"
+
+
+@register.simple_tag
+def categories_badge(listing):
+    """ Returns a bootstrap badge indicating the categories for a given listing """
+
+    BADGE_COLORS = {
+        "AP": "text-bg-dark",
+        "SM": "text-bg-primary",
+        "NK": "text-bg-info",
+        "LUX": "text-bg-warning",
+        "LTS": "text-bg-primary",
+        "OLD": "text-bg-success",
+        "LEG": "text-bg-dark",
+        "N": "text-bg-success",
+        "U": "text-bg-secondary",
+        "B": "text-bg-danger",
+    }
+
+    badges = ""
+
+    if listing.brand:
+        badges += f"<span class='badge {BADGE_COLORS[listing.brand]}'>{listing.get_brand_display()}</span> "
+    if listing.type:
+        badges += f"<span class='badge {BADGE_COLORS[listing.type]}'>{listing.get_type_display()}</span> "
+    if listing.condition:
+        badges += f"<span class='badge {BADGE_COLORS[listing.condition]}'>{listing.get_condition_display()}</span> "
+
+    return badges

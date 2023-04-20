@@ -17,6 +17,10 @@
                 </div>
                 <div class="col-9">
                     <h4 class="mt-3 fw-bold">{{ listing.title }}</h4>
+                    {% categories_badge listing as badges %}
+                    {% if badges %}
+                        <p class="small my-1">{{ badges | safe }}</p>
+                    {% endif %}
                     <p class="fw-bold my-1">Price: ${{ listing.current_price }}</p>
                     <p class="my-1">{{ listing.description }}</p>
                     <p class="text-muted small my-1">Created {{ listing.date | time_ago }}</p>
