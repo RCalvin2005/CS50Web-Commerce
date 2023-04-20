@@ -13,7 +13,7 @@ def index(request):
     """ Shows currently active listings """
 
     return render(request, "auctions/index.html", {
-        "listings": Listing.objects.filter(active=True),
+        "listings": Listing.objects.filter(active=True).order_by('-date'),
     })
 
 
@@ -76,7 +76,7 @@ def place_bid(request, listing_id):
             listing.current_price = bid.value
             listing.save()
             
-            # Add listing to watchlist
+            # Auto add listing to watchlist
             if listing not in request.user.watchlist.all():
                 listing.watchers.add(request.user) 
                 request.session["msg"] = {"msg": "Bid placed successfully. Listing added to watchlist.", "class": "alert-success"}
@@ -145,7 +145,7 @@ def user_listings(request, username):
 
     return render(request, "auctions/user_listings.html", {
         "seller": seller,
-        "listings": seller.listings.all(),
+        "listings": seller.listings.all().order_by('-date'),
     })
 
 
@@ -158,7 +158,7 @@ def watchlist(request, username):
         return HttpResponseRedirect(reverse("watchlist", args=[request.user.username]))
 
     return render(request, "auctions/watchlist.html", {
-        "listings": request.user.watchlist.all(),
+        "listings": request.user.watchlist.all().order_by('-date'),
     })
 
 

@@ -53,36 +53,30 @@ def cutoff(s):
                 count += 1 
     else:
         return s
+            
 
-
-# https://stackoverflow.com/questions/420703/how-do-i-add-multiple-arguments-to-my-custom-template-filter-in-a-django-templat
 @register.simple_tag
-def bid_status_badge(user, listing):
-    """ Returns a bootstrap badge indicating the user's bid status """
+def is_watching(user, listing):
+    """ Returns True/False if user is watching a listing """
+    return user in listing.watchers.all()
 
-    try: 
-        highest_bid = listing.bids.order_by('-value')[0].value
-    except IndexError:
-        return "<span class='badge text-bg-secondary'>No Bids</span>"
-    
-    user_bid = listing.bids.filter(bidder=user)
 
-    if listing.active:    
-        if user_bid:
-            if user_bid.order_by('-value')[0].value == highest_bid:
-                return "<span class='badge text-bg-success'>You have the leading bid</span>"
-            else:
-                return "<span class='badge text-bg-danger'>Place a new bid to be in the lead</span>"
-        else:
-            return "<span class='badge text-bg-secondary'>You have not placed a bid</span>"
+@register.simple_tag
+def get_comments(listing):
+    """ Returns a list of comments for given listing """
+    return listing.comments.all().order_by("-date")
+
+
+@register.simple_tag
+def comment_count(listing):
+    """ Returns the number of comments """
+
+    count = listing.comments.count()
+
+    if count == 1:
+        return f"<h4 class='mt-4'>{count} Comment</h4>"
     else:
-        if user_bid:
-            if user_bid.order_by('-value')[0].value == highest_bid:
-                return "<span class='badge text-bg-success'>You won</span>"
-            else:
-                return "<span class='badge text-bg-danger'>You lost</span>"
-        else:
-            return "<span class='badge text-bg-secondary'>You did not placed a bid</span>"
+        return f"<h4 class='mt-4'>{count} Comments</h4>"
 
 
 @register.simple_tag
@@ -148,30 +142,36 @@ def bid_result(user, listing):
             return f"<div class='alert alert-danger' role='alert'>No one had placed a bid on your listing.</div>"
 
         return f"<div class='alert alert-primary' role='alert'><strong>@{winner}</strong> has won your listing. The price has increased by <strong>${ listing.current_price - listing.starting_price }</strong> compared to your starting price.</div>"
-            
 
+
+# https://stackoverflow.com/questions/420703/how-do-i-add-multiple-arguments-to-my-custom-template-filter-in-a-django-templat
 @register.simple_tag
-def is_watching(user, listing):
-    """ Returns True/False if user is watching a listing """
-    return user in listing.watchers.all()
+def bid_status_badge(user, listing):
+    """ Returns a bootstrap badge indicating the user's bid status """
 
+    try: 
+        highest_bid = listing.bids.order_by('-value')[0].value
+    except IndexError:
+        return "<span class='badge text-bg-secondary'>No Bids</span>"
+    
+    user_bid = listing.bids.filter(bidder=user)
 
-@register.simple_tag
-def get_comments(listing):
-    """ Returns a list of comments for given listing """
-    return listing.comments.all().order_by("-date")
-
-
-@register.simple_tag
-def comment_count(listing):
-    """ Returns the number of comments """
-
-    count = listing.comments.count()
-
-    if count == 1:
-        return f"<h4 class='mt-4'>{count} Comment</h4>"
+    if listing.active:    
+        if user_bid:
+            if user_bid.order_by('-value')[0].value == highest_bid:
+                return "<span class='badge text-bg-success'>You have the leading bid</span>"
+            else:
+                return "<span class='badge text-bg-danger'>Place a new bid to be in the lead</span>"
+        else:
+            return "<span class='badge text-bg-secondary'>You have not placed a bid</span>"
     else:
-        return f"<h4 class='mt-4'>{count} Comments</h4>"
+        if user_bid:
+            if user_bid.order_by('-value')[0].value == highest_bid:
+                return "<span class='badge text-bg-success'>You won</span>"
+            else:
+                return "<span class='badge text-bg-danger'>You lost</span>"
+        else:
+            return "<span class='badge text-bg-secondary'>You did not placed a bid</span>"
 
 
 @register.simple_tag
