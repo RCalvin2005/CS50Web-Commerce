@@ -158,7 +158,7 @@ def watchlist(request, username):
         return HttpResponseRedirect(reverse("watchlist", args=[request.user.username]))
 
     return render(request, "auctions/watchlist.html", {
-        "watchlist": request.user.watchlist.all(),
+        "listings": request.user.watchlist.all(),
     })
 
 
