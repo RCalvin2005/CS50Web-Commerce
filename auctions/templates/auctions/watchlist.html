@@ -27,7 +27,7 @@
                         {{ bid_badge | safe }}
                     </p>
                     <p class="fw-bold my-1">Price: ${{ listing.current_price | number_commas }}</p>
-                    <p class="my-1">{{ listing.description }}</p>
+                    <p class="my-1">{{ listing.description | cutoff }}</p>
                     <p class="text-muted small my-1">Created {{ listing.date | time_ago }}</p>
                 </div>
             </div>

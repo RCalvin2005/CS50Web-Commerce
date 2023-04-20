@@ -40,6 +40,21 @@ def number_commas(num):
     return f"{num:,}"
 
 
+@register.filter()
+def cutoff(s):
+    """ Cuts off a long string into a shorter one """
+    
+    if len(s) > 220:
+        count = 220
+        while True:
+            if s[count] in [",", ".", "!", "?", " "]:
+                return s[:count] + " ..."
+            else:
+                count += 1 
+    else:
+        return s
+
+
 # https://stackoverflow.com/questions/420703/how-do-i-add-multiple-arguments-to-my-custom-template-filter-in-a-django-templat
 @register.simple_tag
 def bid_status_badge(user, listing):
