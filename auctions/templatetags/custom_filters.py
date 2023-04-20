@@ -34,6 +34,12 @@ def time_ago(date_created):
     return re.sub(r"^1 (\w+)s ago$", r"1 \1 ago", diff_str)
 
 
+@register.filter()
+def number_commas(num):
+    """ Returns a number separated by commas """
+    return f"{num:,}"
+
+
 # https://stackoverflow.com/questions/420703/how-do-i-add-multiple-arguments-to-my-custom-template-filter-in-a-django-templat
 @register.simple_tag
 def bid_status_badge(user, listing):

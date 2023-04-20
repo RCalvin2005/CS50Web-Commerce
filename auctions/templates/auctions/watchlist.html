@@ -26,7 +26,7 @@
                         {% bid_status_badge user listing as bid_badge %}
                         {{ bid_badge | safe }}
                     </p>
-                    <p class="fw-bold my-1">Price: ${{ listing.current_price }}</p>
+                    <p class="fw-bold my-1">Price: ${{ listing.current_price | number_commas }}</p>
                     <p class="my-1">{{ listing.description }}</p>
                     <p class="text-muted small my-1">Created {{ listing.date | time_ago }}</p>
                 </div>
