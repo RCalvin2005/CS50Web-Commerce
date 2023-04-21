@@ -78,8 +78,32 @@
 
         <h4 class="mt-4">Details</h4>
         <ul>
-            <li>Listed by: <a href="{% url 'user_listings' listing.seller.username %}" class="fw-bold link-underline link-underline-opacity-0 link-underline-opacity-100-hover">{{ listing.seller }}</a></li>
-            <li>Created {{ listing.date }}</li>
+            <li><span class="fw-semibold">Listed by:</span> <a href="{% url 'user_listings' listing.seller.username %}" class="fw-bold link-underline link-underline-opacity-0 link-underline-opacity-100-hover">{{ listing.seller }}</a></li>
+            <li><span class="fw-semibold">Created:</span> {{ listing.date }}</li>
+            <li>
+                <span class="fw-semibold">Brand: </span> 
+                {% if listing.get_brand_display %}
+                    {{ listing.get_brand_display }}
+                {% else %}
+                    <span class="text-danger fw-semibold">Not Listed</span>
+                {% endif %}
+            </li>
+            <li>
+                <span class="fw-semibold">Type: </span>
+                {% if listing.get_type_display %}
+                    {{ listing.get_type_display }}
+                {% else %}
+                    <span class="text-danger fw-semibold">Not Listed</span>
+                {% endif %}
+            </li>
+            <li>
+                <span class="fw-semibold">Condition: </span>
+                {% if listing.get_condition_display %}
+                    {{ listing.get_condition_display }}
+                {% else %}
+                    <span class="text-danger fw-semibold">Not Listed</span>
+                {% endif %}
+            </li>
         </ul>
 
         {% comment_count listing as comment_count %}
