@@ -1,4 +1,7 @@
 from django import forms
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Submit
+from crispy_forms.bootstrap import Div, FormActions
 
 from .models import Listing, Bid, Comment
 
@@ -64,3 +67,28 @@ class CommentForm(forms.ModelForm):
         labels = {
             "message": "",
         }
+
+
+class CategoriesForm(forms.ModelForm):
+
+    # https://stackoverflow.com/questions/46892518/inline-form-with-django-crispy-form
+    def __init__(self, *args, **kwargs):
+        super(CategoriesForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.layout = Layout(
+        Div(
+            Div("brand", css_class="col"),
+            Div("type", css_class="col"),
+            Div("condition", css_class="col"),
+            Div(
+                FormActions(Submit('submit', 'Filter')),
+                css_class="col-auto categories-button"
+            ),
+            css_class='row container-fluid mx-auto',
+        ))
+
+
+    class Meta:
+        model = Listing
+        fields = ("brand", "type", "condition")

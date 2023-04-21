@@ -5,6 +5,8 @@
 {% block body %}
     <h2>{% block heading %}{% endblock %}</h2>
 
+    {% block filter_form %}{% endblock %}
+
     {% for listing in listings %}
         <a href="{% url 'listing_page' listing.id %}" class="text-reset text-decoration-none">
             <div class="row listing-group mx-5 my-3 border rounded">

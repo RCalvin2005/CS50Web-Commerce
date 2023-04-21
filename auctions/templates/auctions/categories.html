@@ -1,0 +1,29 @@
+{% extends "auctions/listings_list.html" %}
+
+{% load custom_filters %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    Categories
+{% endblock %}
+
+{% block heading %}
+    Categories
+{% endblock %}
+
+{% block filter_form %}
+    <form action="{% url 'categories' %}" method="post">
+        {% crispy categories_filter %}
+    </form>
+{% endblock %}
+
+{% block badges %}
+    {% categories_badge listing as categories %}
+    {% if categories %}
+        <p class="small mb-0">{{ categories | safe }}</p>
+    {% endif %}
+{% endblock %}
+
+{% block empty_msg %}
+    No currently active listings based on your filters.
+{% endblock %}

@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.urls import reverse
 
 from .models import User, Listing, Bid, Comment
-from .forms import ListingForm, BidForm, CommentForm
+from .forms import ListingForm, BidForm, CommentForm, CategoriesForm
 
 
 def index(request):
@@ -186,6 +186,29 @@ def watchlist_remove(request, listing_id):
         request.session["msg"] = {"msg": "Listing has been removed from watchlist!", "class": "alert-success"}
 
     return HttpResponseRedirect(reverse("listing_page", args=[listing_id]))
+
+
+def categories(request):
+    """ Allow users to filter for specific categories """
+
+    listings = Listing.objects.filter(active=True).order_by('-date')
+    form = CategoriesForm()
+
+    if request.method == "POST":
+        form = CategoriesForm(request.POST)
+        if form.is_valid():
+            # Filters listings based on selected categories
+            if form.cleaned_data["brand"]:
+                listings = listings.filter(brand=form.cleaned_data["brand"])
+            if form.cleaned_data["type"]:
+                listings = listings.filter(type=form.cleaned_data["type"])
+            if form.cleaned_data["condition"]:
+                listings = listings.filter(condition=form.cleaned_data["condition"])
+
+    return render(request, "auctions/categories.html", {
+        "listings": listings,
+        "categories_filter": form,
+    })
 
 
 def login_view(request):
