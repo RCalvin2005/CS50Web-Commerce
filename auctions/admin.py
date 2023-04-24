@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Listing, Bid, Comment
+from .models import Listing, Bid, Comment, User
 
 class ListingAdmin(admin.ModelAdmin):
     list_display = ("id", "title", "current_price", "seller")

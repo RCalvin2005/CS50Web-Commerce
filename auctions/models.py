@@ -63,7 +63,7 @@ class Bid(models.Model):
     bidder = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bids")
 
     def __str__(self):
-        return f"{self.bidder} has placed a bid of ${self.value} for {self.listing}"
+        return f"{self.bidder} has placed a bid of ${self.value} for Listing: {self.listing}"
 
 
 class Comment(models.Model):
@@ -73,4 +73,4 @@ class Comment(models.Model):
     date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.author} commented \"{self.message}\" at {self.listing}"
+        return f"{self.author} commented \"{self.message}\" on Listing: {self.listing}"
