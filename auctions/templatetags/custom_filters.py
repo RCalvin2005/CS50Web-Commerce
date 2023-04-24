@@ -55,6 +55,13 @@ def cutoff(s):
         return s
             
 
+@register.filter()
+def watchlist_count(user):
+    """ Returns the number of listings in a user's watchlist """
+    
+    return user.watchlist.count()
+
+
 @register.simple_tag
 def is_watching(user, listing):
     """ Returns True/False if user is watching a listing """
