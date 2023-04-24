@@ -129,7 +129,7 @@ def bid_result(user, listing):
 
         if user_bid:
             if user_bid.order_by('-value')[0].value == listing.bids.order_by('-value')[0].value:
-                return f"<div class='alert alert-success' role='alert'>Congrats! You won the bid! Contact <strong>@{listing.seller}</strong> for your item.</div>"
+                return f"<div class='alert alert-success' role='alert'>Congrats! You won the listing! Contact <strong>@{listing.seller}</strong> for your item.</div>"
             else:
                 return "<div class='alert alert-danger' role='alert'>You lost the bid. Better luck next time!</div>"
         else:
