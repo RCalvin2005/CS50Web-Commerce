@@ -3,6 +3,10 @@
 {% load crispy_forms_tags %}
 {% load custom_filters %}
 
+{% block title %}
+    Listing: {{ listing.title }}
+{% endblock %}
+
 {% block body %}
     <div class="container">
         {% if msg %}
@@ -120,7 +124,10 @@
 
         {% get_comments listing as comments %}
         {% for comment in comments %}
-            <p class="mb-1"><b>@{{ comment.author }}</b>   <span class="small text-muted">{{ comment.date | time_ago }}</span></p>
+            <p class="mb-1">
+                <a href="{% url 'user_comments' comment.author.username %}" class="fw-bold link-underline link-underline-opacity-0 link-underline-opacity-100-hover">@{{ comment.author }}</a>
+                <span class="small text-muted">{{ comment.date | time_ago }}</span>
+            </p>
             <p>{{ comment.message }}</p>
         {% endfor %}
     </div>

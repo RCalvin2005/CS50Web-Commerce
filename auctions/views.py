@@ -149,6 +149,17 @@ def user_listings(request, username):
     })
 
 
+def user_comments(request, username):
+    """ Displays all comments posted by a specified user """
+
+    author = User.objects.get(username=username)
+
+    return render(request, "auctions/user_comments.html", {
+        "username": username,
+        "comments": Comment.objects.filter(author=author).order_by("-date"),
+    })
+
+
 @login_required
 def watchlist(request, username):
     """ Displays all listings in user's own watchlist """

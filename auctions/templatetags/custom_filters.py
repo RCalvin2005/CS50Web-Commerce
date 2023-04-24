@@ -71,7 +71,7 @@ def is_watching(user, listing):
 @register.simple_tag
 def get_comments(listing):
     """ Returns a list of comments for given listing """
-    return listing.comments.all().order_by("-date")
+    return listing.comments.all()
 
 
 @register.simple_tag

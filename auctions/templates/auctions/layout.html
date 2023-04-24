@@ -39,10 +39,13 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="{% url 'add_listing' %}">Create Listing</a>
+                </li>
+                <li class="nav-item ms-auto">
                     <a class="nav-link" href="{% url 'user_listings' user.username %}">My Listings</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'add_listing' %}">Create Listing</a>
+                    <a class="nav-link" href="{% url 'user_comments' user.username %}">My Comments</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'logout' %}">Log Out</a>

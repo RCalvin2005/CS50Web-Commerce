@@ -1,0 +1,22 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}
+    {{ username }}'s Comments
+{% endblock %}
+
+{% block body %}
+    <h2>{{ username }}'s Comments</h2>
+
+    <div class="mx-3">
+        {% for comment in comments %}
+            <div class="border rounded py-2 px-3">
+                <p class="small mb-1 text-secondary">Commented on Listing: 
+                    <a href="{% url 'listing_page' comment.listing.id %}" class="fw-bold link-underline link-underline-opacity-0 link-underline-opacity-100-hover">{{ comment.listing }}</a>
+                </p>
+                <p class="my-2">{{ comment.message }}</p>
+            </div>
+        {% empty %}
+            {{ username }} has not posted any comments.
+        {% endfor %}
+    </div>
+{% endblock %}
